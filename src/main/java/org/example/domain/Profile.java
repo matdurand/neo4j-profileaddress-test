@@ -1,6 +1,7 @@
 package org.example.domain;
 
 import org.springframework.data.neo4j.annotation.*;
+import org.springframework.data.neo4j.support.*;
 
 /**
  * @author mdurand
@@ -11,8 +12,8 @@ public class Profile {
 	@GraphId
 	private Long id;
 	private String name;
-	@RelatedTo
-	private Address address;
+	@RelatedTo private Address address;
+	private boolean addressLoaded = false;
 
 	/**
 	 * @return the id
@@ -47,7 +48,11 @@ public class Profile {
 	/**
 	 * @return the address
 	 */
-	public Address getAddress() {
+	public Address getAddress(Neo4jTemplate template) {
+		if (!addressLoaded) {
+			address = template.fetch(address);
+			addressLoaded = true;
+		}
 		return address;
 	}
 

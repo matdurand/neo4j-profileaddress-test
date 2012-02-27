@@ -4,6 +4,7 @@ import org.example.repository.*;
 import org.junit.*;
 import org.junit.runner.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.neo4j.support.*;
 import org.springframework.test.context.*;
 import org.springframework.test.context.junit4.*;
 import org.springframework.transaction.annotation.*;
@@ -23,6 +24,9 @@ public class DomainTests {
 	@Autowired
 	protected AddressRepository addressRepository;
 
+	@Autowired
+	protected Neo4jTemplate template;
+
     @Before
     public void setUp() throws Exception {
     }
@@ -40,7 +44,8 @@ public class DomainTests {
     	profile = profileRepository.save(profile);
 
     	Profile retrivedProfile = profileRepository.findOne(profile.getId());
-    	assertEquals("Quebec", retrivedProfile.getAddress().getCity());
-    	assertEquals("St-Paul", retrivedProfile.getAddress().getStreet());
+    	Address address = retrivedProfile.getAddress(template);
+		assertEquals("Quebec", address.getCity());
+    	assertEquals("St-Paul", address.getStreet());
     }
 }
