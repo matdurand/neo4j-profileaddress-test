@@ -17,35 +17,39 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"/test-context.xml"})
 @Transactional
-public class DomainTests {
-	@Autowired
-	protected ProfileRepository profileRepository;
+public class DomainTests
+{
+    @Autowired
+    protected ProfileRepository profileRepository;
 
-	@Autowired
-	protected AddressRepository addressRepository;
+    @Autowired
+    protected AddressRepository addressRepository;
 
-	@Autowired
-	protected Neo4jTemplate template;
+    @Autowired
+    protected Neo4jTemplate template;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+        throws Exception
+    {
     }
 
     @Test
-    public void createAndReload() {
-    	Address primary = new Address();
-    	primary.setCity("Quebec");
-    	primary.setStreet("St-Paul");
-    	primary = addressRepository.save(primary);
+    public void createAndReload()
+    {
+        Address primary = new Address();
+        primary.setCity("Quebec");
+        primary.setStreet("St-Paul");
+        primary = addressRepository.save(primary);
 
-    	Profile profile = new Profile();
-    	profile.setName("Mathieu");
-    	profile.setAddress(primary);
-    	profile = profileRepository.save(profile);
+        Profile profile = new Profile();
+        profile.setName("Mathieu");
+        profile.setAddress(primary);
+        profile = profileRepository.save(profile);
 
-    	Profile retrivedProfile = profileRepository.findOne(profile.getId());
-    	Address address = retrivedProfile.getAddress(template);
-		assertEquals("Quebec", address.getCity());
-    	assertEquals("St-Paul", address.getStreet());
+        Profile retrivedProfile = profileRepository.findOne(profile.getId());
+        Address address = retrivedProfile.getAddress(template);
+        assertEquals("Quebec", address.getCity());
+        assertEquals("St-Paul", address.getStreet());
     }
 }
